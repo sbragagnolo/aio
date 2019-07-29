@@ -63,11 +63,12 @@ AIO >> openFile: pathname option: flags  mode: mode [
 ]
 
 { #category : #open }
-AIO >> openForRead: aFileReference [ 
+AIO >> openForRead: aFileReference [
 	| handle |
 	handle := AIOFileHandle new.
 	handle
-		aio_fildes: (self openFile: aFileReference fullName option: AIO O_RDONLY).
+		aio_fildes: (self openFile: aFileReference fullName option: AIO O_RDONLY);
+		beReadOnly.
 	^ handle
 ]
 
@@ -76,11 +77,12 @@ AIO >> openForWrite: aFileReference [
 	| handle |
 	handle := AIOFileHandle new.
 	handle
-		aio_fildes: (self openFile: aFileReference fullName option: AIO O_WRONLY).
+		aio_fildes: (self openFile: aFileReference fullName option: AIO O_WRONLY);
+		beWriteOnly.
 	^ handle
 ]
 
 { #category : #'meta-object-protocol' }
-AIO >> read: id [
-	^ self ffiCall: #(void aio_read #(self))
+AIO >> read: hand [
+	^ self ffiCall: #(void aio_read #(AIOFileHandle * hand))
 ]

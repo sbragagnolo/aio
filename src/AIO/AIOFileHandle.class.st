@@ -1,6 +1,11 @@
 Class {
 	#name : #AIOFileHandle,
 	#superclass : #FFIExternalStructure,
+	#instVars : [
+		'read',
+		'write',
+		'buffer'
+	],
 	#classVars : [
 		'OFFSET_AIO_BUF',
 		'OFFSET_AIO_FILDES',
@@ -116,10 +121,19 @@ AIOFileHandle >> aio_sigevent: anObject [
 ]
 
 { #category : #'accessing structure variables' }
-AIOFileHandle >> openForWrite: aFileReference [
-	self
-		aio_fildes:
-			(AIO uniqueInstance
-				openFile: aFileReference
-				option: AIO O_WRONLY | AIO O_CREAT)
+AIOFileHandle >> beReadOnly [ 
+	read := true.
+	write := false.
+]
+
+{ #category : #'accessing structure variables' }
+AIOFileHandle >> beWriteOnly [
+	read := false.
+	write := true
+]
+
+{ #category : #'accessing structure variables' }
+AIOFileHandle >> initialize [
+	super initialize.
+	self aio_buf: (ExternalAddress allocate: 1024 * 1024)
 ]
