@@ -1,6 +1,6 @@
 Class {
 	#name : #AIO,
-	#superclass : #LibC,
+	#superclass : #FFILibrary,
 	#category : #AIO
 }
 
@@ -49,22 +49,14 @@ AIO class >> O_WRONLY [
 
 { #category : #'meta-object-protocol' }
 AIO >> close: fd [
-	^ self ffiCall: #(int close(int fd))
+	^ self ffiCall: #(int close #(int fd)) module: LibC
 ]
 
 { #category : #'meta-object-protocol' }
-AIO >> mem: ptr set: value size: n [
-	^ self ffiCall: #(void *memset(void *ptr, const int value, size_t n))
-]
-
-{ #category : #'meta-object-protocol' }
-AIO >> openFile: pathname option: flags [ 
-	^ self ffiCall: #(int open(const char *pathname, int flags))
-]
-
-{ #category : #'meta-object-protocol' }
-AIO >> openFile: pathname option: flags  mode: mode [
-	^ self ffiCall: #(int open(const char *pathname, int flags, uint16 mode))
+AIO >> openFile: pathname option: flags [
+	^ self
+		ffiCall: #(int open #(const char * pathname , int flags))
+		module: LibC
 ]
 
 { #category : #open }
@@ -89,5 +81,10 @@ AIO >> openForWrite: aFileReference [
 
 { #category : #'meta-object-protocol' }
 AIO >> read: hand [
-	^ self ffiCall: #(void aio_read #(AIOFileHandle * hand))
+	^ self ffiCall: #(int aio_read #(AIOFileHandle * hand))
+]
+
+{ #category : #open }
+AIO >> unixModuleName [
+	^ 'librt.so.1'
 ]

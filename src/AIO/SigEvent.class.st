@@ -3,23 +3,21 @@ Class {
 	#superclass : #FFIExternalStructure,
 	#classVars : [
 		'OFFSET_SIGEV_NOTIFY',
-		'OFFSET_SIGEV_NOTIFY_ATTRIBUTES',
-		'OFFSET_SIGEV_NOTIFY_FUNCTION',
-		'OFFSET_SIGEV_NOTIFY_THREAD_ID',
 		'OFFSET_SIGEV_SIGNO',
-		'OFFSET_SIGEV_VALUE'
+		'OFFSET_SIGEV_VALUE',
+		'OFFSET__SIGEV_UN'
 	],
 	#category : #AIO
 }
 
 { #category : #'library path' }
 SigEvent class >> SIGEV_NONE [
-	^ 0
+	^ 1
 ]
 
 { #category : #'library path' }
 SigEvent class >> SIGEV_SIGNAL [
-	^ 1
+	^ 0 
 ]
 
 { #category : #'library path' }
@@ -38,12 +36,26 @@ SigEvent class >> fieldsDesc [
 
 "void (*sigev_notify_function) (SigVal) "
 	^ 
-#(int sigev_notify; 
-  int sigev_signo;  
+#(
   SigVal sigev_value;  
-  FFICallback sigev_notify_function;
-  void* sigev_notify_attributes;
-  int32 sigev_notify_thread_id;)
+  int sigev_notify; 
+  int sigev_signo;  
+  SigUnion _sigev_un;
+)
+
+ 
+]
+
+{ #category : #'accessing structure variables' }
+SigEvent >> _sigev_un [
+	"This method was automatically generated"
+	^ SigUnion fromHandle: (handle referenceStructAt: OFFSET__SIGEV_UN length: SigUnion byteSize)
+]
+
+{ #category : #'accessing structure variables' }
+SigEvent >> _sigev_un: anObject [
+	"This method was automatically generated"
+	handle structAt: OFFSET__SIGEV_UN put: anObject getHandle length: SigUnion byteSize
 ]
 
 { #category : #'accessing structure variables' }

@@ -22,21 +22,44 @@ AIOTests >> testFileCanBeOpenForWrite [
 	
 ]
 
+{ #category : #'type tests' }
+AIOTests >> testFileHandleStructIs168Bytes [
+	self assert: AIOFileHandle byteSize equals: 168.
+
+]
+
 { #category : #tests }
 AIOTests >> testReadFileNonEventCommunication [
-	| handle buffer |
+	| handle  |
+	
 	handle := AIO uniqueInstance
-		openForRead: 'pharo-local/iceberg/sbragagnolo/aio/file.test' asFileReference.
-	handle aio_sigevent sigev_notify: SigEvent SIGEV_NONE.
-	buffer := ExternalAddress allocate: 512.
-	buffer autoRelease.
-	
-	handle aio_buf: buffer.
+		openForRead: '/home/santiago/git-repositories/aio/pharo-local/iceberg/sbragagnolo/aio/file.test' asFileReference.
+	handle aio_sigevent sigev_signo:  0.
+	handle aio_sigevent sigev_notify: 0.
 	handle read.
+	[ handle isInProgress ] whileTrue: [ 100 milliSeconds wait ]. 
+	handle errorCode.
+	handle aioReturn.
+		self halt.
+	handle perror.
 	
-	[handle isInProgress] whileTrue: [ 100 milliSeconds wait ].
-	
-	self halt.
 
+]
+
+{ #category : #'type tests' }
+AIOTests >> testSigEventSizeEqualsTo64 [
+	self assert: SigEvent byteSize equals: 64.
+
+]
+
+{ #category : #'type tests' }
+AIOTests >> testSigUnionSizeEqualsTo64Minus2IntsAndOnePointer [
+	self assert: SigUnion byteSize equals: 64 - (3 * 4).
+
+]
+
+{ #category : #'type tests' }
+AIOTests >> testSigValSizeEqualsToOneIntOrOnePointer [
+	self assert: SigVal byteSize equals: 4.
 
 ]
