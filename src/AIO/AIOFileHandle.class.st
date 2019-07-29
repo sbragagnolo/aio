@@ -233,6 +233,11 @@ AIOFileHandle >> beWriteOnly [
 	write := true
 ]
 
+{ #category : #accessing }
+AIOFileHandle >> buffer [
+	^ buffer
+]
+
 { #category : #'as yet unclassified' }
 AIOFileHandle >> errorCode [
 	^ self ffiCall:#(int aio_error(self))
@@ -272,4 +277,14 @@ AIOFileHandle >> perror: aString [
 { #category : #read }
 AIOFileHandle >> read [
 	^ AIO uniqueInstance read: self
+]
+
+{ #category : #'as yet unclassified' }
+AIOFileHandle >> value [
+	| num |
+	num := self aioReturn.
+	num < 0
+		ifTrue: [ self error: 'Error reading' ].
+	^ ((1 to: num) collect: [ :c | buffer unsignedByteAt: c ])
+		asByteArray
 ]

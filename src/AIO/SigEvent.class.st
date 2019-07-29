@@ -26,6 +26,11 @@ SigEvent class >> SIGEV_THREAD [
 ]
 
 { #category : #'library path' }
+SigEvent class >> SIGIO [
+	^ 29
+]
+
+{ #category : #'library path' }
 SigEvent class >> ffiLibraryName [
 	^ AIO
 ]
