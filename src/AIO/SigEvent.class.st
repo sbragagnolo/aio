@@ -13,6 +13,21 @@ Class {
 }
 
 { #category : #'library path' }
+SigEvent class >> SIGEV_NONE [
+	^ 0
+]
+
+{ #category : #'library path' }
+SigEvent class >> SIGEV_SIGNAL [
+	^ 1
+]
+
+{ #category : #'library path' }
+SigEvent class >> SIGEV_THREAD [
+	^ 3
+]
+
+{ #category : #'library path' }
 SigEvent class >> ffiLibraryName [
 	^ AIO
 ]
@@ -26,7 +41,7 @@ SigEvent class >> fieldsDesc [
 #(int sigev_notify; 
   int sigev_signo;  
   SigVal sigev_value;  
-  void* sigev_notify_function;
+  FFICallback sigev_notify_function;
   void* sigev_notify_attributes;
   int32 sigev_notify_thread_id;)
 ]

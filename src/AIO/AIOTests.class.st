@@ -24,9 +24,19 @@ AIOTests >> testFileCanBeOpenForWrite [
 
 { #category : #tests }
 AIOTests >> testReadFileNonEventCommunication [
-	| handle |
+	| handle buffer |
 	handle := AIO uniqueInstance
 		openForRead: 'pharo-local/iceberg/sbragagnolo/aio/file.test' asFileReference.
-	self assert: handle aio_fildes > 0.
-	AIO uniqueInstance close: handle aio_fildes
+	handle aio_sigevent sigev_notify: SigEvent SIGEV_NONE.
+	buffer := ExternalAddress allocate: 512.
+	buffer autoRelease.
+	
+	handle aio_buf: buffer.
+	handle read.
+	
+	[handle isInProgress] whileTrue: [ 100 milliSeconds wait ].
+	
+	self halt.
+
+
 ]

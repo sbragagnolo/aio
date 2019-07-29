@@ -132,8 +132,28 @@ AIOFileHandle >> beWriteOnly [
 	write := true
 ]
 
+{ #category : #'as yet unclassified' }
+AIOFileHandle >> errorCode [
+	^ self ffiCall:#(int aio_error(self))
+]
+
+{ #category : #'accessing structure variables' }
+AIOFileHandle >> ffiLibraryName [ 
+	^ self class ffiLibraryName 
+]
+
 { #category : #'accessing structure variables' }
 AIOFileHandle >> initialize [
 	super initialize.
 	self aio_buf: (ExternalAddress allocate: 1024 * 1024)
+]
+
+{ #category : #'aio error' }
+AIOFileHandle >> isInProgress [
+	^ self errorCode = AIO EINPROGRESS
+]
+
+{ #category : #read }
+AIOFileHandle >> read [
+	^ AIO uniqueInstance read: self
 ]

@@ -4,6 +4,11 @@ Class {
 	#category : #AIO
 }
 
+{ #category : #access }
+AIO class >> EINPROGRESS [
+	^ 36
+]
+
 { #category : #'as yet unclassified' }
 AIO class >> O_ACCMODE [
 	^ 16r0003
