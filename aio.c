@@ -5,78 +5,90 @@
 #include<string.h>
 #include <errno.h>
 #include <pthread.h>
+#include <signal.h>
 
+
+#include <features.h>
+#include <sys/types.h>
+#define __need_sigevent_t
+#include <bits/siginfo.h>
+#define __need_timespec
+#include <time.h>
 
 #define BUFSIZE 256
 
-void handle_read(union sigval sigev_value) {
-	printf("handling read!\n");
-}
- 
-void thread_handler(union sigval sv) {
-        char *s = sv.sival_ptr;
 
-        /* Will print "5 seconds elapsed." */
-        puts(s);
+char buffer [BUFSIZE];
+void thread_handler_example (union sigval sigev_value) {
+	printf("Thread handling read!. Thread parameter %s %ld \n",  sigev_value.sival_ptr, pthread_self() );
 }
  
- 
- void
-aio_completion_handler(int signo, siginfo_t *info, void *context)
-{
- printf("handling read!blblablabl\n");
+void signal_handler_example (int signo, siginfo_t *info, void *context) {
+	printf("Signal handling read! %s\n", buffer);
 }
 
 
+
+void configureForThread (struct aiocb *cb, char* buffer) {
+    cb->aio_sigevent.sigev_notify = SIGEV_THREAD;           
+    cb->aio_sigevent.sigev_notify_function = thread_handler_example;
+    cb->aio_sigevent.sigev_notify_attributes = NULL;
+    cb->aio_sigevent.sigev_value.sival_ptr = buffer;
+}
+
+void configureForSignal  (struct aiocb *cb, char* buffer) {
+     cb->aio_sigevent.sigev_notify = 0;// SIGEV_SIGNAL;    
+     cb->aio_sigevent.sigev_signo = SIGIO;
+     struct sigaction sig_act;
+
+     sigemptyset(&sig_act.sa_mask);
+     sig_act.sa_flags = SA_SIGINFO;
+     sig_act.sa_sigaction = signal_handler_example;
+     sigaction(SIGIO, &sig_act, NULL);
+}
+
+void configureForNone (struct aiocb *cb, char* buffer) {
+    cb->aio_sigevent.sigev_notify = 1;// SIGEV_NONE;  
+}
 int main (void ) {
-	char buffer [BUFSIZE];
-	char buffer2 [BUFSIZE];
 	
-	pthread_attr_t init; 
-	int fd; 
+	
+	int fd;
 	struct aiocb cb; 
 	
-	pthread_attr_init(&init);
-	pthread_attr_setdetachstate (&init, PTHREAD_CREATE_JOINABLE );
+
+
+	printf ("CB sizes all=%d off64_t:%d struct sigevent: %d" , sizeof(struct aiocb), sizeof(long), sizeof(struct sigevent));
+
+
 	
-	fd = open ("/Users/sbragagn/git-repositories/aio_example/file.test", O_RDONLY);
-	
+	fd = open ("/home/santiago/git-repositories/aio/pharo-local/iceberg/sbragagnolo/aio/file.test", O_RDONLY);
 	memset( &cb, 0, sizeof(struct aiocb) );
 	memset( &buffer, 0, BUFSIZE );
 	cb.aio_fildes = fd;
 	cb.aio_nbytes = BUFSIZE;
 	cb.aio_offset = 0;
-	cb.aio_buf = &buffer;
-	
-    cb.aio_sigevent.sigev_notify = SIGEV_THREAD;           
-    cb.aio_sigevent.sigev_notify_function = handle_read;
-	cb.aio_sigevent.sigev_notify_attributes = &init;
-	
-	cb.aio_sigevent.sigev_value.sival_ptr = NULL;
-	
-   /* 
-	cb.aio_sigevent.sigev_signo = SIGIO;
-	   cb.aio_sigevent.sigev_value.sival_ptr = (void*)buffer2;
-	struct sigaction sig_act;
+	cb.aio_buf = buffer;
 
-     sigemptyset(&sig_act.sa_mask);
-     sig_act.sa_flags = SA_SIGINFO;
-     sig_act.sa_sigaction = aio_completion_handler;
 
-     sigaction(SIGIO, &sig_act, NULL);
-	*/
-	printf("buffer %s\n", strerror(errno));
+	configureForNone(&cb, buffer); 
+
 	aio_read(&cb);
-	printf("buffer %s\n", strerror(errno));
+
 	while(aio_error(&cb) == EINPROGRESS)
 		{
+	
 			printf("Working...\n");
+sleep(1);
 		}
 	
 		// success?
 	int numBytes = aio_return(&cb);
-	buffer [numBytes] = 0;
-	printf("buffer %d %s\n",numBytes, buffer);
-	printf("buffer %d %s\n",errno, strerror(errno));
+	if (numBytes > 0) {
+		printf("NONE strategy %d %s\n",numBytes, buffer);
+	}
+	else {
+		printf("buffer %d %s\n",errno, strerror(errno));
+	}
 	
 }
