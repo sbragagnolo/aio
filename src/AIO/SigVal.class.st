@@ -1,11 +1,16 @@
 "
-https://www.systutorials.com/docs/linux/man/7-sigevent/
-/* Data passed with notification */
+SigVal defines a nuion of a pointer or an integer, to be able to pass two kinds of parameters and use them properly. 
+
+typedef union sigval {
+	int sival_int;
+	void *sival_ptr;
+} sigval_t;
+
 "
 Class {
 	#name : #SigVal,
 	#superclass : #FFIExternalUnion,
-	#category : #AIO
+	#category : #'AIO-Signal'
 }
 
 { #category : #'library path' }

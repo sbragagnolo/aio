@@ -1,5 +1,5 @@
 Class {
 	#name : #SharedMemory,
 	#superclass : #LibC,
-	#category : #AIO
+	#category : #'AIO-SharedMemory'
 }

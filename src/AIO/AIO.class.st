@@ -1,7 +1,7 @@
 Class {
 	#name : #AIO,
 	#superclass : #FFILibrary,
-	#category : #AIO
+	#category : #'AIO-aio'
 }
 
 { #category : #access }

@@ -1,7 +1,7 @@
 Class {
 	#name : #AIOTests,
 	#superclass : #TestCase,
-	#category : #AIO
+	#category : #'AIO-aio'
 }
 
 { #category : #tests }
@@ -35,7 +35,7 @@ AIOTests >> testReadFileNonEventCommunication [
 		openForRead:
 			'/home/santiago/git-repositories/aio/pharo-local/iceberg/sbragagnolo/aio/file.test'
 				asFileReference.
-	handle aio_sigevent sigev_signo: SigEvent SIGIO.
+	handle aio_sigevent sigev_signo: Signal SIGIO.
 	handle aio_sigevent sigev_notify: SigEvent SIGEV_SIGNAL.
 	handle read.
 	[ handle isInProgress ] whileTrue: [ 100 milliSeconds wait ].
@@ -51,22 +51,4 @@ AIOTests >> testReadFileNonEventCommunication [
 8
 9
 10'.
-]
-
-{ #category : #'type tests' }
-AIOTests >> testSigEventSizeEqualsTo64 [
-	self assert: SigEvent byteSize equals: 64.
-
-]
-
-{ #category : #'type tests' }
-AIOTests >> testSigUnionSizeEqualsTo64Minus2IntsAndOnePointer [
-	self assert: SigUnion byteSize equals: 64 - (3 * 4).
-
-]
-
-{ #category : #'type tests' }
-AIOTests >> testSigValSizeEqualsToOneIntOrOnePointer [
-	self assert: SigVal byteSize equals: 4.
-
 ]

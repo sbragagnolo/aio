@@ -1,3 +1,22 @@
+"
+Sig event is a complex structure defined with some anonymous structures:
+
+typedef struct sigevent {
+	sigval_t sigev_value;
+	int sigev_signo;
+	int sigev_notify;
+	union {
+		int _pad[SIGEV_PAD_SIZE];
+		 int _tid;
+
+		struct {
+			void (*_function)(sigval_t);
+			void *_attribute;	/* really pthread_attr_t */
+		} _sigev_thread;
+	} _sigev_un;
+} sigevent_t;
+
+"
 Class {
 	#name : #SigEvent,
 	#superclass : #FFIExternalStructure,
@@ -7,7 +26,7 @@ Class {
 		'OFFSET_SIGEV_VALUE',
 		'OFFSET__SIGEV_UN'
 	],
-	#category : #AIO
+	#category : #'AIO-Signal'
 }
 
 { #category : #'library path' }
@@ -45,7 +64,7 @@ SigEvent class >> fieldsDesc [
   SigVal sigev_value;  
   int sigev_notify; 
   int sigev_signo;  
-  SigUnion _sigev_un;
+  SigInnerAnonymUnion _sigev_un;
 )
 
  
@@ -54,13 +73,13 @@ SigEvent class >> fieldsDesc [
 { #category : #'accessing structure variables' }
 SigEvent >> _sigev_un [
 	"This method was automatically generated"
-	^ SigUnion fromHandle: (handle referenceStructAt: OFFSET__SIGEV_UN length: SigUnion byteSize)
+	^ SigInnerAnonymUnion fromHandle: (handle referenceStructAt: OFFSET__SIGEV_UN length: SigInnerAnonymUnion byteSize)
 ]
 
 { #category : #'accessing structure variables' }
 SigEvent >> _sigev_un: anObject [
 	"This method was automatically generated"
-	handle structAt: OFFSET__SIGEV_UN put: anObject getHandle length: SigUnion byteSize
+	handle structAt: OFFSET__SIGEV_UN put: anObject getHandle length: SigInnerAnonymUnion byteSize
 ]
 
 { #category : #'accessing structure variables' }

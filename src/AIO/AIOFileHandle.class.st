@@ -22,7 +22,7 @@ Class {
 		'OFFSET___POLICY',
 		'OFFSET___RETURN_VALUE'
 	],
-	#category : #AIO
+	#category : #'AIO-aio'
 }
 
 { #category : #'field definition' }
