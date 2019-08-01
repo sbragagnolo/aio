@@ -1,6 +1,5 @@
 "
-parser := CLangDumpParser new .
-stream := parser preparse: '/home/santiago/git-repositories/aio-git/bla' asFileReference readStream
+mapping:= TalkFFIExamples libClang31Mapping
 "
 Class {
 	#name : #CLangDumpParser,
