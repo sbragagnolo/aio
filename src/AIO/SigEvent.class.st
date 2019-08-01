@@ -95,42 +95,6 @@ SigEvent >> sigev_notify: anObject [
 ]
 
 { #category : #'accessing structure variables' }
-SigEvent >> sigev_notify_attributes [
-	"This method was automatically generated"
-	^ExternalData fromHandle: (handle pointerAt: OFFSET_SIGEV_NOTIFY_ATTRIBUTES) type: ExternalType void asPointerType
-]
-
-{ #category : #'accessing structure variables' }
-SigEvent >> sigev_notify_attributes: anObject [
-	"This method was automatically generated"
-	handle pointerAt: OFFSET_SIGEV_NOTIFY_ATTRIBUTES put: anObject getHandle.
-]
-
-{ #category : #'accessing structure variables' }
-SigEvent >> sigev_notify_function [
-	"This method was automatically generated"
-	^ExternalData fromHandle: (handle pointerAt: OFFSET_SIGEV_NOTIFY_FUNCTION) type: ExternalType void asPointerType
-]
-
-{ #category : #'accessing structure variables' }
-SigEvent >> sigev_notify_function: anObject [
-	"This method was automatically generated"
-	handle pointerAt: OFFSET_SIGEV_NOTIFY_FUNCTION put: anObject getHandle.
-]
-
-{ #category : #'accessing structure variables' }
-SigEvent >> sigev_notify_thread_id [
-	"This method was automatically generated"
-	^handle signedLongAt: OFFSET_SIGEV_NOTIFY_THREAD_ID
-]
-
-{ #category : #'accessing structure variables' }
-SigEvent >> sigev_notify_thread_id: anObject [
-	"This method was automatically generated"
-	handle signedLongAt: OFFSET_SIGEV_NOTIFY_THREAD_ID put: anObject
-]
-
-{ #category : #'accessing structure variables' }
 SigEvent >> sigev_signo [
 	"This method was automatically generated"
 	^handle signedLongAt: OFFSET_SIGEV_SIGNO

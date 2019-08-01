@@ -6,5 +6,5 @@ Class {
 
 { #category : #'accessing platform' }
 CLang >> unixModuleName [
-	^ 'libclang.so.1'
+	^ '/usr/lib/x86_64-linux-gnu/libclang-3.8.so'
 ]
